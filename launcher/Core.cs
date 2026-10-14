@@ -1061,7 +1061,7 @@ namespace MPFever
         public static List<string> LocalDirs(string specificGameDir = null)
         {
             var dirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var gDir = specificGameDir ?? CachedGameDir;
+            var gDir = specificGameDir ?? CachedGameDir ?? FindGameDir();
 
             // 1. Steam emulator paths in Public Documents (RUNE, CODEX, etc.)
             try
@@ -1355,10 +1355,26 @@ namespace MPFever
                 try
                 {
                     var save = Path.Combine(gDir, "save");
-                    if (Directory.Exists(save) && !dirs.Contains(save)) dirs.Add(save);
+                    Directory.CreateDirectory(save);
+                    if (!dirs.Contains(save)) dirs.Add(save);
+                }
+                catch { }
+                try
+                {
+                    var localSave = Path.Combine(gDir, "local", "save");
+                    Directory.CreateDirectory(localSave);
+                    if (!dirs.Contains(localSave)) dirs.Add(localSave);
                 }
                 catch { }
             }
+
+            try
+            {
+                var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                var docSave = Path.Combine(myDocs, "Transport Fever 3", "save");
+                if (Directory.Exists(docSave) && !dirs.Contains(docSave)) dirs.Add(docSave);
+            }
+            catch { }
 
             return dirs;
         }

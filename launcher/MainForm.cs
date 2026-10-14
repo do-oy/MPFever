@@ -962,7 +962,7 @@ namespace MPFever
         {
             try
             {
-                string file = GameInstall.FindSave(lobbySave);
+                string file = GameInstall.FindSave(lobbySave, gameDir);
                 if (file == null) { menuPhase = "error"; menuText = F("Sauvegarde « {0} » introuvable.", "Savegame « {0} » not found.", lobbySave); MenuStatus(); return; }
                 byte[] bytes = File.ReadAllBytes(file);
                 lobbyStarting = true;
@@ -1957,7 +1957,7 @@ namespace MPFever
                 if (!WaitUntil(() => saveDone != null, 180)) { Log.Err(T("Resynchronisation abandonnée : l'hôte n'a pas sauvegardé.", "Resynchronisation cancelled: the host did not save.")); return; }
                 if (!(saveDone.TryGetValue("ok", out var okv) && okv is bool ok && ok)) { Log.Err(T("Resynchronisation abandonnée : sauvegarde refusée.", "Resynchronisation cancelled: save refused.")); return; }
                 Thread.Sleep(1000);   // the file is closed by the game after its callback
-                string file = GameInstall.FindSave(ResyncSaveName);
+                string file = GameInstall.FindSave(ResyncSaveName, gameDir);
                 if (file == null || File.GetLastWriteTimeUtc(file) < t0.AddSeconds(-5))
                 {
                     Log.Err(F("Resynchronisation abandonnée : fichier « {0}.sav » introuvable.", "Resynchronisation cancelled: file « {0}.sav » not found.", ResyncSaveName));
@@ -2023,8 +2023,35 @@ namespace MPFever
             try
             {
                 var bytes = got.SelectMany(Convert.FromBase64String).ToArray();
-                string name = ResyncSaveName + " " + new string(game.Name.Where(char.IsLetterOrDigit).ToArray());
-                foreach (var d in GameInstall.SaveDirs()) File.WriteAllBytes(Path.Combine(d, name + ".sav"), bytes);
+                string cleanName = new string(game.Name.Where(char.IsLetterOrDigit).ToArray());
+                string name = ResyncSaveName + (string.IsNullOrEmpty(cleanName) ? "" : " " + cleanName);
+                var saveDirs = GameInstall.SaveDirs(gameDir);
+                if (saveDirs.Count == 0 && !string.IsNullOrEmpty(gameDir))
+                {
+                    var fallback = Path.Combine(gameDir, "save");
+                    try { Directory.CreateDirectory(fallback); saveDirs.Add(fallback); } catch { }
+                }
+
+                int written = 0;
+                string writeErr = null;
+                foreach (var d in saveDirs)
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(d);
+                        File.WriteAllBytes(Path.Combine(d, name + ".sav"), bytes);
+                        written++;
+                    }
+                    catch (Exception ex)
+                    {
+                        writeErr = ex.Message;
+                        Log.Warn(F("[{0}] sauvegarde non écrite dans {1} : {2}", "[{0}] savegame not written to {1}: {2}", game.Name, d, ex.Message));
+                    }
+                }
+
+                if (written == 0)
+                    throw new IOException(writeErr ?? T("Sauvegarde impossible : aucun dossier accessible.", "Cannot save: no accessible folder."));
+
                 Log.W(F("[{0}] partie de l'hôte reçue ({1:0.0} Mo) : chargement...", "[{0}] host game received ({1:0.0} MB): loading...", game.Name, bytes.Length / 1048576.0));
                 // the host's numbers start again at 1 when its MPFever restarts, while this MPFever and its game remember
                 // the loads they did (menu_loaded.txt, resync_claims.txt) and skipped the host's game as already loaded:

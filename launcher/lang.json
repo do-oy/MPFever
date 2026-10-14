@@ -1899,6 +1899,32 @@
       "zh-CN": "[{0}] 主机的游戏：{1}",
       "zh-TW": "[{0}] 主機的遊戲：{1}"
     },
+    "[{0}] savegame not written to {1}: {2}": {
+      "de": "[{0}] Spielstand konnte nicht in {1} geschrieben werden: {2}",
+      "es": "[{0}] no se pudo escribir la partida guardada en {1}: {2}",
+      "it": "[{0}] salvataggio non scritto in {1}: {2}",
+      "nl": "[{0}] opslagbestand niet geschreven naar {1}: {2}",
+      "pl": "[{0}] nie zapisano stanu gry w {1}: {2}",
+      "pt-BR": "[{0}] jogo salvo não pôde ser gravado em {1}: {2}",
+      "ru": "[{0}] сохранение не записано в {1}: {2}",
+      "ja": "[{0}] セーブデータを {1} に書き込めませんでした: {2}",
+      "ko": "[{0}] {1}에 저장 파일을 쓰지 못했습니다: {2}",
+      "zh-CN": "[{0}] 无法将存档写入 {1}：{2}",
+      "zh-TW": "[{0}] 無法將存檔寫入 {1}：{2}"
+    },
+    "Cannot save: no accessible folder.": {
+      "de": "Speichern nicht möglich: kein zugänglicher Ordner.",
+      "es": "No se puede guardar: no hay ninguna carpeta accesible.",
+      "it": "Impossibile salvare: nessuna cartella accessibile.",
+      "nl": "Kan niet opslaan: geen toegankelijke map.",
+      "pl": "Nie można zapisać: brak dostępnego folderu.",
+      "pt-BR": "Não é possível salvar: nenhuma pasta acessível.",
+      "ru": "Не удалось сохранить: нет доступной папки.",
+      "ja": "保存できません: アクセス可能なフォルダーがありません。",
+      "ko": "저장할 수 없습니다: 접근 가능한 폴더가 없습니다.",
+      "zh-CN": "无法保存：没有可访问的文件夹。",
+      "zh-TW": "無法存檔：沒有可存取的資料夾。"
+    },
     "%s Company": {
       "de": "Firma %s",
       "es": "Empresa %s",
