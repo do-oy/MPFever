@@ -1373,6 +1373,12 @@ namespace MPFever
                 var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 var docSave = Path.Combine(myDocs, "Transport Fever 3", "save");
                 if (Directory.Exists(docSave) && !dirs.Contains(docSave)) dirs.Add(docSave);
+                var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var appSave = Path.Combine(appData, "Transport Fever 3", "save");
+                if (Directory.Exists(appSave) && !dirs.Contains(appSave)) dirs.Add(appSave);
+                var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var localAppSave = Path.Combine(localAppData, "Transport Fever 3", "save");
+                if (Directory.Exists(localAppSave) && !dirs.Contains(localAppSave)) dirs.Add(localAppSave);
             }
             catch { }
 
