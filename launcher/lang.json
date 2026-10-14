@@ -92,19 +92,6 @@
       "zh-CN": "已在游戏文件夹中创建 steam_appid.txt",
       "zh-TW": "已在遊戲資料夾中建立 steam_appid.txt"
     },
-    "Mod or Steam not found, mod installation skipped": {
-      "de": "Mod oder Steam nicht gefunden, Mod-Installation übersprungen",
-      "es": "Mod o Steam no encontrado, instalación del mod omitida",
-      "it": "Mod o Steam non trovato, installazione della mod saltata",
-      "nl": "Mod of Steam niet gevonden, installatie van de mod overgeslagen",
-      "pl": "Nie znaleziono moda lub Steam, pominięto instalację moda",
-      "pt-BR": "Mod ou Steam não encontrado, instalação do mod ignorada",
-      "ru": "Мод или Steam не найдены, установка мода пропущена",
-      "ja": "MOD または Steam が見つかりません。MOD のインストールをスキップしました",
-      "ko": "모드나 Steam을 찾을 수 없어 모드 설치를 건너뛰었습니다",
-      "zh-CN": "未找到模组或 Steam，已跳过模组安装",
-      "zh-TW": "找不到模組或 Steam，已略過模組安裝"
-    },
     "Mod installed in ": {
       "de": "Mod installiert in ",
       "es": "Mod instalado en ",
@@ -858,19 +845,6 @@
       "ko": "동기화 안 됨",
       "zh-CN": "不同步",
       "zh-TW": "不同步"
-    },
-    "Transport Fever 3 was not found. Check that the game is installed through Steam.": {
-      "de": "Transport Fever 3 wurde nicht gefunden. Prüfe, ob das Spiel über Steam installiert ist.",
-      "es": "No se encontró Transport Fever 3. Comprueba que el juego esté instalado a través de Steam.",
-      "it": "Transport Fever 3 non trovato. Verifica che il gioco sia installato tramite Steam.",
-      "nl": "Transport Fever 3 is niet gevonden. Controleer of het spel via Steam is geïnstalleerd.",
-      "pl": "Nie znaleziono Transport Fever 3. Sprawdź, czy gra jest zainstalowana przez Steam.",
-      "pt-BR": "O Transport Fever 3 não foi encontrado. Verifique se o jogo está instalado pela Steam.",
-      "ru": "Transport Fever 3 не найдена. Проверьте, что игра установлена через Steam.",
-      "ja": "Transport Fever 3 が見つかりませんでした。ゲームが Steam でインストールされているか確認してください。",
-      "ko": "Transport Fever 3를 찾을 수 없습니다. 게임이 Steam으로 설치되어 있는지 확인하세요.",
-      "zh-CN": "未找到 Transport Fever 3。请确认游戏已通过 Steam 安装。",
-      "zh-TW": "找不到 Transport Fever 3。請確認遊戲已透過 Steam 安裝。"
     },
     "The game is starting. Choose « Multiplayer (MPFever) » in its main menu to host or join a game.": {
       "de": "Das Spiel startet. Wähle « Mehrspieler (MPFever) » im Hauptmenü, um ein Spiel zu hosten oder beizutreten.",
@@ -3289,6 +3263,84 @@
       "ko": "게임 시작",
       "zh-CN": "开始游戏",
       "zh-TW": "開始遊戲"
+    },
+    "Mod source not found, mod installation skipped": {
+      "de": "Mod-Quellordner nicht gefunden, Mod-Installation übersprungen",
+      "es": "Carpeta fuente del mod no encontrada, instalación del mod omitida",
+      "it": "Cartella sorgente della mod non trovata, installazione della mod saltata",
+      "nl": "Bronmap van de mod niet gevonden, installatie van mod overgeslagen",
+      "pl": "Nie znaleziono folderu źródłowego moda, pominięto instalację moda",
+      "pt-BR": "Pasta de origem do mod não encontrada, instalação do mod ignorada",
+      "ru": "Исходная папка мода не найдена, установка мода пропущена",
+      "ja": "Mod のソースフォルダが見つかりません。Mod のインストールをスキップしました",
+      "ko": "모드 소스 폴더를 찾을 수 없습니다. 모드 설치를 건너뜁니다",
+      "zh-CN": "未找到 Mod 源文件夹，跳过 Mod 安装",
+      "zh-TW": "找不到 Mod 來源資料夾，略過 Mod 安裝"
+    },
+    "Select game folder...": {
+      "de": "Spielordner auswählen...",
+      "es": "Seleccionar carpeta del juego...",
+      "it": "Seleziona cartella del gioco...",
+      "nl": "Selecteer spelmap...",
+      "pl": "Wybierz folder gry...",
+      "pt-BR": "Selecionar pasta do jogo...",
+      "ru": "Выбрать папку с игрой...",
+      "ja": "ゲームフォルダを選択...",
+      "ko": "게임 폴더 선택...",
+      "zh-CN": "选择游戏文件夹...",
+      "zh-TW": "選擇遊戲資料夾..."
+    },
+    "Game folder...": {
+      "de": "Spielordner...",
+      "es": "Carpeta del juego...",
+      "it": "Cartella del gioco...",
+      "nl": "Spelmap...",
+      "pl": "Folder gry...",
+      "pt-BR": "Pasta do jogo...",
+      "ru": "Папка с игрой...",
+      "ja": "ゲームフォルダ...",
+      "ko": "게임 폴더...",
+      "zh-CN": "游戏文件夹...",
+      "zh-TW": "遊戲資料夾..."
+    },
+    "Transport Fever 3 was not found. Select the game folder to continue.": {
+      "de": "Transport Fever 3 wurde nicht gefunden. Wähle den Spielordner, um fortzufahren.",
+      "es": "No se encontró Transport Fever 3. Selecciona la carpeta del juego para continuar.",
+      "it": "Transport Fever 3 non trovato. Seleziona la cartella del gioco per continuare.",
+      "nl": "Transport Fever 3 is niet gevonden. Selecteer de spelmap om door te gaan.",
+      "pl": "Nie znaleziono Transport Fever 3. Wybierz folder gry, aby kontynuować.",
+      "pt-BR": "O Transport Fever 3 não foi encontrado. Selecione a pasta do jogo para continuar.",
+      "ru": "Transport Fever 3 не найдена. Выберите папку с игрой, чтобы продолжить.",
+      "ja": "Transport Fever 3 が見つかりませんでした。続行するにはゲームフォルダを選択してください。",
+      "ko": "Transport Fever 3를 찾을 수 없습니다. 계속하려면 게임 폴더를 선택하세요.",
+      "zh-CN": "未找到 Transport Fever 3。请选择游戏文件夹以继续。",
+      "zh-TW": "找不到 Transport Fever 3。請選擇遊戲資料夾以繼續。"
+    },
+    "Select TransportFever3.exe": {
+      "de": "Wähle TransportFever3.exe",
+      "es": "Selecciona TransportFever3.exe",
+      "it": "Seleziona TransportFever3.exe",
+      "nl": "Selecteer TransportFever3.exe",
+      "pl": "Wybierz TransportFever3.exe",
+      "pt-BR": "Selecionar TransportFever3.exe",
+      "ru": "Выберите TransportFever3.exe",
+      "ja": "TransportFever3.exe を選択",
+      "ko": "TransportFever3.exe 선택",
+      "zh-CN": "选择 TransportFever3.exe",
+      "zh-TW": "選擇 TransportFever3.exe"
+    },
+    "TransportFever3.exe not found in this folder.": {
+      "de": "TransportFever3.exe wurde in diesem Ordner nicht gefunden.",
+      "es": "TransportFever3.exe no se encontró en esta carpeta.",
+      "it": "TransportFever3.exe non trovato in questa cartella.",
+      "nl": "TransportFever3.exe niet gevonden in deze map.",
+      "pl": "Nie znaleziono TransportFever3.exe w tym folderze.",
+      "pt-BR": "TransportFever3.exe não foi encontrado nesta pasta.",
+      "ru": "TransportFever3.exe не найден в этой папке.",
+      "ja": "このフォルダに TransportFever3.exe が見つかりません。",
+      "ko": "이 폴더에서 TransportFever3.exe를 찾을 수 없습니다.",
+      "zh-CN": "在此文件夹中未找到 TransportFever3.exe。",
+      "zh-TW": "在此資料夾中找不到 TransportFever3.exe。"
     }
   }
 }

@@ -26,6 +26,17 @@ namespace MPFever
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Log.Init(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs"));
+            for (int i = 0; i < args.Length; i++)
+            {
+                if ((args[i] == "--game-dir" || args[i] == "--path" || args[i] == "-p") && i + 1 < args.Length)
+                {
+                    GameInstall.CustomGameDir = args[i + 1];
+                }
+                else if (GameInstall.IsValidGameDir(args[i]))
+                {
+                    GameInstall.CustomGameDir = args[i];
+                }
+            }
             MainForm.InitLanguage();
             bool auto = args.Length > 0 && args[0] == "--autotest";
             MainForm.Dev = auto || args.Contains("--dev");
@@ -247,7 +258,18 @@ namespace MPFever
             var info = new Card();
             hint.Font = Theme.Ui(9.75f);
             info.Controls.Add(hint);
-            Ui.StackTop(info, Ui.Caption(T("Que faire ?", "What next?")));
+            if (gameMissing)
+            {
+                var pickFolderBtn = new ModernButton(ButtonKind.Primary) { Text = T("Choisir le dossier du jeu...", "Select game folder...") };
+                pickFolderBtn.Fit();
+                pickFolderBtn.Click += (s, e) => BrowseGameFolder();
+                info.Controls.Add(pickFolderBtn);
+                Ui.StackTop(info, Ui.Caption(T("Que faire ?", "What next?")), hint, Ui.Gap(12), pickFolderBtn);
+            }
+            else
+            {
+                Ui.StackTop(info, Ui.Caption(T("Que faire ?", "What next?")));
+            }
 
             var left = new Panel { Dock = DockStyle.Left, Width = S(340), Padding = new Padding(0, 0, S(16), 0) };
             info.Dock = DockStyle.Fill;
@@ -333,7 +355,15 @@ namespace MPFever
                 try { Process.Start("https://github.com/dkdknight/MPFever"); }
                 catch (Exception ex) { Log.W(ex.Message); }
             };
+            var gameFolderBtn = new ModernButton(ButtonKind.Ghost) { Text = T("Dossier du jeu...", "Game folder...") };
+            gameFolderBtn.Dock = DockStyle.Right;
+            gameFolderBtn.Height = S(24);
+            gameFolderBtn.Margin = new Padding(S(8), S(4), S(8), S(4));
+            gameFolderBtn.Fit();
+            gameFolderBtn.Click += (s, e) => BrowseGameFolder();
+
             footer.Controls.Add(status);
+            footer.Controls.Add(gameFolderBtn);
             footer.Controls.Add(gameLabel);
             footer.Controls.Add(by);
             footer.Controls.Add(credit);   // docked first: rightmost
@@ -519,7 +549,7 @@ namespace MPFever
             // what to do now
             string h;
             if (gameMissing)
-                h = T("Transport Fever 3 est introuvable. Vérifiez que le jeu est installé via Steam.", "Transport Fever 3 was not found. Check that the game is installed through Steam.");
+                h = T("Transport Fever 3 est introuvable. Choisissez le dossier du jeu pour continuer.", "Transport Fever 3 was not found. Select the game folder to continue.");
             else if (menuMode && !string.IsNullOrEmpty(menuText)) h = menuText;
             else if (menuMode) h = T("Le jeu démarre. Choisissez « Multijoueur (MPFever) » dans son menu principal pour héberger ou rejoindre une partie.",
                                      "The game is starting. Choose « Multiplayer (MPFever) » in its main menu to host or join a game.");
@@ -545,15 +575,50 @@ namespace MPFever
             catch (Exception e) { Log.Err(T("Erreur : ", "Error: ") + e.Message); MessageBox.Show(this, e.Message, "MPFever", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
+        void BrowseGameFolder()
+        {
+            using (var dlg = new OpenFileDialog())
+            {
+                dlg.Title = T("Sélectionnez TransportFever3.exe", "Select TransportFever3.exe");
+                dlg.Filter = "TransportFever3.exe (TransportFever3.exe)|TransportFever3.exe|Executable (*.exe)|*.exe|All files (*.*)|*.*";
+                dlg.FileName = "TransportFever3.exe";
+                if (!string.IsNullOrEmpty(gameDir) && Directory.Exists(gameDir))
+                    dlg.InitialDirectory = gameDir;
+                else if (Directory.Exists(@"G:\Games\Transport.Fever.3"))
+                    dlg.InitialDirectory = @"G:\Games\Transport.Fever.3";
+
+                if (dlg.ShowDialog(this) == DialogResult.OK)
+                {
+                    var dir = Path.GetDirectoryName(dlg.FileName);
+                    if (GameInstall.IsValidGameDir(dir))
+                    {
+                        SaveSetting("game_dir", dir);
+                        GameInstall.CustomGameDir = dir;
+                        GameInstall.CachedGameDir = dir;
+                        gameDir = dir;
+                        gameMissing = false;
+                        OnLanguageChanged();
+                        Init();
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, T("TransportFever3.exe introuvable dans ce dossier.", "TransportFever3.exe not found in this folder."), "MPFever", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
         void Init()
         {
             gameDir = GameInstall.FindGameDir();
             if (gameDir == null) { gameMissing = true; Log.Err(T("Transport Fever 3 introuvable.", "Transport Fever 3 not found.")); status.Text = T("Jeu introuvable", "Game not found"); return; }
+            gameMissing = false;
+            SaveSetting("game_dir", gameDir);
             Log.W(T("Jeu : ", "Game: ") + gameDir);
             try { GameInstall.EnsureSteamAppId(gameDir); } catch (Exception e) { Log.W("steam_appid.txt : " + e.Message); }
             try { GameInstall.InstallNative(gameDir); } catch (Exception e) { Log.W("winhttp.dll: " + e.Message); }
-            try { GameInstall.EnsureModActive(); } catch (Exception e) { Log.W("settings.lua: " + e.Message); }
-            try { GameInstall.InstallMod(); } catch (Exception e) { Log.Warn(T("Installation du mod : ", "Mod installation: ") + e.Message); }
+            try { GameInstall.EnsureModActive(gameDir); } catch (Exception e) { Log.W("settings.lua: " + e.Message); }
+            try { GameInstall.InstallMod(gameDir); } catch (Exception e) { Log.Warn(T("Installation du mod : ", "Mod installation: ") + e.Message); }
             if (MenuModeDefault && !autotest)
             {
                 StartMenuMode();
@@ -619,12 +684,14 @@ namespace MPFever
         static string PublicAddress()
         {
             var st = LoadSettings();
+            if (st.TryGetValue("lan", out var lanVal) && lanVal.Trim() == "1")
+                return LocalAddresses().Split(',')[0].Trim();
             if (st.TryGetValue("lookupip", out var lk) && lk.Trim() == "0")
                 return LocalAddresses().Split(',')[0].Trim();
             try
             {
                 var req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create("https://api.ipify.org");
-                req.Timeout = 5000;
+                req.Timeout = 1500;
                 using (var resp = req.GetResponse())
                 using (var r = new StreamReader(resp.GetResponseStream()))
                 {

@@ -1,0 +1,6 @@
+# MPFever configuration file
+# You can specify the game path manually here (game_dir, path, or path1):
+game_dir=G:\Games\Transport.Fever.3
+
+# Set lan=1 to use local LAN address directly (useful without internet access):
+lan=1

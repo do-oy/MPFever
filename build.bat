@@ -8,13 +8,22 @@ echo MPFever build %date% %time%
 set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
 if not exist "%VSWHERE%" (echo vswhere.exe not found: install Visual Studio & exit /b 1)
 for /f "usebackq delims=" %%i in (`"%VSWHERE%" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do set "MSBUILD=%%i"
-if not defined MSBUILD (echo MSBuild not found & exit /b 1)
+where dotnet >nul 2>nul
+if %errorlevel% equ 0 (
+    set "USE_DOTNET=1"
+) else (
+    if not defined MSBUILD (echo MSBuild or dotnet not found & exit /b 1)
+)
 
 echo === 1/3 native module
 call native\build.bat || exit /b 1
 
 echo === 2/3 launcher
-"%MSBUILD%" launcher\MPFever.csproj -restore -p:Configuration=Release -v:minimal -nologo || exit /b 1
+if defined USE_DOTNET (
+    dotnet build launcher\MPFever.csproj -c Release -v:minimal -nologo || exit /b 1
+) else (
+    "%MSBUILD%" launcher\MPFever.csproj -restore -p:Configuration=Release -v:minimal -nologo || exit /b 1
+)
 
 echo === 3/3 package
 set "VERSION=0.3.10-experimental"
@@ -24,6 +33,7 @@ mkdir "%DIST%" || exit /b 1
 copy /y launcher\bin\Release\MPFever.exe "%DIST%\" >nul || exit /b 1
 copy /y launcher\bin\Release\MPFever.exe.config "%DIST%\" >nul || exit /b 1
 copy /y native\out\winhttp.dll "%DIST%\" >nul || exit /b 1
+if exist launcher\mpfever_settings.txt copy /y launcher\mpfever_settings.txt "%DIST%\" >nul
 for %%f in (README INSTALL ROADMAP CHANGELOG) do copy /y docs\%%f.txt "%DIST%\" >nul || exit /b 1
 xcopy /e /i /q /y mod\mpfever_1 "%DIST%\mod\mpfever_1" >nul || exit /b 1
 if exist "release\MPFever-%VERSION%.zip" del "release\MPFever-%VERSION%.zip"

@@ -1758,22 +1758,15 @@ static DWORD WINAPI SteamThread(void*)
 {
     HMODULE sa = 0;
     void* friends = 0;
-    for (int i = 0; i < 600 && !friends; i++) {   // the game initialises Steam during its start
+    for (int i = 0; i < 40 && !friends; i++) {   // the game initialises Steam during its start
         Sleep(500);
         if (!sa) sa = GetModuleHandleW(L"steam_api64.dll");
         if (!sa) continue;
         auto get = (SteamIfaceF)GetProcAddress(sa, "SteamAPI_SteamFriends_v017");
         if (get) friends = get();
     }
-    if (!friends) { Buf b; b.str("steam: friends interface not available, invitations off"); LogLine(b); return 0; }
-    auto setRp = (SetRichPresenceF)GetProcAddress(sa, "SteamAPI_ISteamFriends_SetRichPresence");
-    auto clearRp = (ClearRichPresenceF)GetProcAddress(sa, "SteamAPI_ISteamFriends_ClearRichPresence");
-    auto invite = (InviteConnectF)GetProcAddress(sa, "SteamAPI_ISteamFriends_ActivateGameOverlayInviteDialogConnectString");
-    auto reg = (RegisterCallbackF)GetProcAddress(sa, "SteamAPI_RegisterCallback");
-    if (reg) reg(&g_joinCb, 337);
-    { Buf b; b.str("steam: invitations ready").str(reg ? "" : " (no join callback)"); LogLine(b); }
-    // the player's Steam account (steam_id.txt): the mod knows a player by it, whatever name the player types
-    {
+    // the player's Steam or emulator account (steam_id.txt): the mod knows a player by it
+    if (sa) {
         typedef u64 (*GetSteamIdF)(void* self);
         auto getUser = (SteamIfaceF)GetProcAddress(sa, "SteamAPI_SteamUser_v023");
         auto getId = (GetSteamIdF)GetProcAddress(sa, "SteamAPI_ISteamUser_GetSteamID");
@@ -1785,6 +1778,13 @@ static DWORD WINAPI SteamThread(void*)
         }
         Buf l; l.str("steam: account ").str(sid ? "known" : "unknown"); LogLine(l);
     }
+    if (!friends) { Buf b; b.str("steam: friends interface not available, invitations off"); LogLine(b); return 0; }
+    auto setRp = (SetRichPresenceF)GetProcAddress(sa, "SteamAPI_ISteamFriends_SetRichPresence");
+    auto clearRp = (ClearRichPresenceF)GetProcAddress(sa, "SteamAPI_ISteamFriends_ClearRichPresence");
+    auto invite = (InviteConnectF)GetProcAddress(sa, "SteamAPI_ISteamFriends_ActivateGameOverlayInviteDialogConnectString");
+    auto reg = (RegisterCallbackF)GetProcAddress(sa, "SteamAPI_RegisterCallback");
+    if (reg) reg(&g_joinCb, 337);
+    { Buf b; b.str("steam: invitations ready").str(reg ? "" : " (no join callback)"); LogLine(b); }
     char last[64] = {};
     static char buf[1024];
     for (;;) {
